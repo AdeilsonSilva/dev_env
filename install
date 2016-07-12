@@ -1,0 +1,23 @@
+#!/usr/bin
+
+# First, update the system
+sudo apt-get update
+sudo apt-get upgrade
+
+# Then install some basic stuff
+sudo apt-get install git vim 
+
+# Set things in place
+cp Vim/.vimrc ~/.vimrc
+mkdir ~/.vim/tmpFiles
+
+# Install Vim Plugins with Vundle
+git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+vim +PluginInstall +qall
+
+# Set Vim as editor for git
+git config --global core.editor "vim"
+git config --global diff.tool vimdiff
+git config --global merge.tool vimdiff
+
+echo "That's it!"
