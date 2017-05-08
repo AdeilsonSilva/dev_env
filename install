@@ -1,23 +1,42 @@
-#!/usr/bin
+#!/bin/bash
+
+# Setting up some environment variables
+export TMP_FOLDER="tmp"
+export SCRIPTS_FOLDER="scripts"
+export FILES_FOLDER="files"
+
+export firefox_file="firefox.tar.bz2"
+export atom_file="atom.deb"
+
+if ((`uname -m` == "x86_64")); then
+        ARCHITETURE="64";
+else
+        ARCHITETURE="32";
+fi
+
+export ARCHITETURE
+
+# Enable log files
+exec 2> .log
+
+echo "=================================="
+echo "If an error occurs, check the '.log' file!"
+echo "=================================="
 
 # First, update the system
-sudo apt-get update
-sudo apt-get upgrade
+echo "System update"
+yes | sudo apt-get update &>> .log
+yes | sudo apt-get upgrade &>> .log
 
-# Then install some basic stuff
-sudo apt-get install git vim 
+# Basics and acessories
+yes | ./scripts/acessories.sh
 
-# Set things in place
-cp Vim/.vimrc ~/.vimrc
-mkdir ~/.vim/tmpFiles
-
-# Install Vim Plugins with Vundle
-git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-vim +PluginInstall +qall
-
-# Set Vim as editor for git
-git config --global core.editor "vim"
-git config --global diff.tool vimdiff
-git config --global merge.tool vimdiff
+# Webdev tools
+read -p "Do you wish to install webdev tools [Apache, phpMyAdmin, MySQL] (y/n)?" answer
+case $answer in
+    [Yy]* ) yes | ./scripts/tools.sh; break;;
+    [Nn]* ) exit;;
+    * ) echo "Please answer yes or no.";;
+esac
 
 echo "That's it!"

@@ -14,11 +14,26 @@ In the following sections I explain what you're getting into.
 ## Installation
 I set up a script to settle everything up. Just run on your terminal and follow along:
 
-To configure types:
 `$ ./install`
 
 
 ## What is being installed?
 
-## Tips
+#### Basics
+* Git
+* Vim
+* Tmux
 
+#### Acessories
+* Sublime
+* Atom
+* Firefox
+* Firefox Developer
+* Chromium  
+* Filezilla
+
+#### Extra tools
+* PHP
+* Apache
+* phpMyAdmin
+* MySQL
