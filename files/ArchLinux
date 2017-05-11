@@ -1,0 +1,104 @@
+============ BASE INSTALLATION =========================
+
+# Set console keymap
+ls /usr/share/kbd/keymaps/**/*.map.gz
+loadkeys *pt*
+
+# Set Console font
+ls /usr/share/kbd/consolefonts/
+setfont *pt*
+
+# Verify boot mode 
+ls /sys/firmware/efi/efivars # If the directory does not exist, the system may be booted in BIOS or CSM mode.
+
+# Set Wireless Network
+lspci -k # Check driver status
+ip link set wlan0 up # Change 'wlan0' to your interface
+pacman -S iw wpa_supplicant
+iw dev interface scan | less
+wpa_supplicant -i interface -c <(wpa_passphrase "your_SSID" "your_key")
+ping archlinux.org # Check if connection is ok
+
+# Update System Clock
+timedatectl set-ntp true
+
+# Check disk partitions
+fdisk -l
+
+# Format partitions
+mkfs.ext4 /dev/sda5 # '/' folder 
+mkfs.ext4 /dev/sda6 # '/home' folder
+mkswap /dev/sda7 # Swap
+
+# Mount partitions
+mount /dev/sda5 /mnt
+mkdir /mnt/boot
+mount /dev/sda1 /mnt/boot
+mkdir /mnt/home
+mount /dev/sda6 /mnt/home
+swapon /dev/sda7
+
+# Select mirrors
+vi /etc/pacman.d/mirrorlist # Move up on the list geographically closest mirrors
+
+# Install base packages
+pacstrap /mnt base base-devel 
+
+# Initial system configurations
+genfstab -U /mnt >> /mnt/etc/fstab
+vi /mnt/etc/fstab # Check if everything is ok
+
+# Chroot
+arch-chroot /mnt
+
+# Set timezone
+ln -sf /usr/share/zoneinfo/America/Bahia /etc/localtime
+hwclock --systohc # generate /etc/adjtime
+
+# Locale
+vi /etc/locale.gen # Uncomment en_US.UTF-8 UTF-8 and other needed localizations
+locale-gen
+vi /etc/locale.conf # Set LANG variable 'LANG=en_US.UTF-8'
+vi /etc/vconsole.conf # Set Keyboard Layout
+
+# Create hostname
+vi /etc/hostname
+vi /etc/hosts # 127.0.1.1   myhostname.localdomain  myhostname
+
+# Set root password
+passwd
+
+# Boot loader
+pacman -S intel-ucode grub efibootmgr os-prober 
+grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=grub
+grub-mkconfig -o /boot/grub/grub.cfg
+parted /dev/sda print # Check partitions if needed
+
+# Reboot
+exit # Exit Chroot environment
+reboot
+
+============ POST INSTALLATION =========================
+
+# Users and groups
+useradd -m -G wheel -s /bin/bash adeilson
+pacman -S sudo
+visudo # edit sudo stuff
+Add do the end of the file -> %wheel      ALL=(ALL) ALL
+It will grant sudo access to all members of 'wheel' group
+
+# Enable multilib (32-bit packages)
+vim /etc/pacman.conf # Uncomment multilib lines
+
+# Display server and drivers
+pacman -S xorg 
+
+# Bumblebee
+pacman -S bumblebee mesa nvidia xf86-video-intel lib32-virtualgl lib32-nvidia-utils mesa-demos bbswitch nvidia-settings
+gpasswd -a adeilson bumblebee
+systemctl enable bumblebeed.service
+optirun glxgears -info # teste
+
+# Desktop environment
+pacman -S gnome gnome-extra 
+
