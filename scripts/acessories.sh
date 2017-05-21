@@ -5,10 +5,13 @@ echo "Start with the basics."
 sudo apt-get install git vim tmux
 
 # Set things in place
-cp $FILES_FOLDER/Vim/.vimrc ~/.vimrc
 mkdir ~/.vim/tmpFiles
+cp $FILES_FOLDER/Vim/.vimrc ~/.vimrc
+cp $FILES_FOLDER/Tmux/.tmux.conf ~/.tmux.conf
+cp $FILES_FOLDER/Tmux/.bashrc ~/.bashrc
 
 # Install Vim Plugins with Vundle
+mkdir ~/.vim/bundle
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 vim +PluginInstall +qall
 
