@@ -28,6 +28,9 @@ Plugin 'airblade/vim-gitgutter'
 " A vim plug-in which provides support for expanding abbreviations similar to emmet
 Plugin 'mattn/emmet-vim'
 
+" a plugin for visually displaying indent levels in Vim
+Plugin 'Yggdroot/indentLine'
+
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -63,15 +66,11 @@ set showcmd                     " display incomplete commands
 set smartindent                 " smart autoindenting when starting a new line
 set tabstop=4                   " number of spaces that a <Tab> counts for
 
-"colorscheme molokai
-colorscheme elflord
-
-"Muda pra aba anterior
-"map <F7> :tabp<CR> 
-"Muda pra próxima aba
-"map <F8> :tabn<CR> 
+colorscheme molokai
+"colorscheme elflord
 
 let g:molokai_original = 1
+let g:rehash256 = 1
 :set t_Co=256
 set omnifunc=syntaxcomplete#Complete
 set completeopt=longest,menuone,preview
@@ -119,5 +118,43 @@ au FileType c setl ofu=ccomplete#CompleteCpp
 let g:user_emmet_install_global = 0
 autocmd FileType html,phtml,php,inc,css EmmetInstall
 "Redefining Emmet trigger key
-"let g:user_emmet_leader_key='<C-e>'
+let g:user_emmet_leader_key='<C-E>'
 
+" 2017-05-12 22:05
+" YouCompleteMe Stuff
+let g:ycm_global_ycm_extra_conf = '/usr/share/vim/vimfiles/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+let g:ycm_autoclose_preview_window_after_completion = 1
+
+" 2017-05-23 10:54
+" Colorscheme with terminal background transparency
+hi Normal ctermbg=none
+highlight NonText ctermbg=none
+
+
+" 2017-05-23 17:23
+" Search and replace remap
+:nnoremap <Leader>s :%s/<C-r><C-w>//gc<Left><Left><Left>
+" Remaps F7 to fix indentation on whole file and return to cursor position
+map <F7> mzgg=G`z
+
+" 2017-06-25 00:24
+:nnoremap <Leader>w :w<ENTER>
+
+" 2017-08-31 13:23
+" Sets "soft" linebreak do wrap text
+set wrap linebreak nolist
+set breakindent
+set breakindentopt=shift:4
+
+" 2017-09-17 23:18
+" Remaps F9 key to toggle ignorecase when searching
+set ignorecase
+nmap <F9> :set ignorecase! ignorecase?
+
+
+" 20171217 14:29
+" Improve CtrlP search time
+let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
+if executable('ag')
+    let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+endif
