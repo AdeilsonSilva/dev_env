@@ -19,6 +19,9 @@ iw dev interface scan | less
 wpa_supplicant -i interface -c <(wpa_passphrase "your_SSID" "your_key")
 ping archlinux.org # Check if connection is ok
 
+# Settting wired connection
+dhcpcd enp7s0
+
 # Update System Clock
 timedatectl set-ntp true
 
